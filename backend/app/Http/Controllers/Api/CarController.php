@@ -3,15 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SearchCarRequest;
+use App\Http\Resources\CarResource;
+use App\Services\CarSearchService;
 use Illuminate\Http\Request;
 
 class CarController extends Controller
 {
-    public function index()
+    public function index(SearchCarRequest $request)
     {
-        return response()->json([
-            'message' => 'Hello from Car index!'
-        ]);
+        $service = new CarSearchService();
+        $cars = $service->search($request->validated());
+
+        return CarResource::collection($cars);
     }
 
     public function store(Request $request)
