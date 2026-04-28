@@ -18,4 +18,12 @@ class CarImage extends Model
     {
         return $this->belongsTo(Car::class);
     }
+
+    protected function casts(): array
+    {
+    return [
+        'is_primary' => 'boolean',
+        'sort_order' => 'integer',
+    ];
+    }
 }
