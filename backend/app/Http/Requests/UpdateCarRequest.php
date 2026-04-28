@@ -5,14 +5,14 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCarRequest extends FormRequest
+class UpdateCarRequest extends CarBaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,8 +22,6 @@ class UpdateCarRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        return $this->carRules();
     }
 }

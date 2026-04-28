@@ -7,12 +7,9 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class SearchCarRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,7 +20,23 @@ class SearchCarRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'make_id' => 'nullable|exists:car_makes,id',
+            'model_id' => 'nullable|exists:car_models,id',
+
+            'fuel_type_id' => 'nullable|exists:fuel_types,id',
+            'body_type_id' => 'nullable|exists:body_types,id',
+            'transmission_id' => 'nullable|exists:transmissions,id',
+
+            'price_min' => 'nullable|integer|min:0',
+            'price_max' => 'nullable|integer|min:0',
+
+            'year_min' => 'nullable|integer|min:1950|max:' . now()->year,
+            'year_max' => 'nullable|integer|min:1950|max:' . now()->year,
+
+            'mileage_max' => 'nullable|integer|min:0',
+
+            'sort_by' => 'nullable|in:price,year,mileage,created_at',
+            'sort_dir' => 'nullable|in:asc,desc',
         ];
     }
 }
