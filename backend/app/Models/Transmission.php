@@ -5,19 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class CarMake extends Model
+class Transmission extends Model
 {
     protected $fillable = [
         'name'
     ];
 
-    public function cars(): HasMany
+    public function car(): HasMany
     {
         return $this->hasMany(Car::class);
-    }
-
-    public function models(): HasMany
-    {
-        return $this->hasMany(CarModel::class);
     }
 }
