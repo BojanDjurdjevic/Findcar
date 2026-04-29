@@ -14,9 +14,8 @@ class CarImageController
 extends Controller
 {
    public function __construct(
-      protected CarImageService
-      $imageService
-   ){}
+      protected CarImageService $imageService
+   ) {}
 
    public function store(StoreCarImageRequest $request, Car $car) 
     {
