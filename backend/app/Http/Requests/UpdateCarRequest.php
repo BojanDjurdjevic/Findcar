@@ -22,6 +22,13 @@ class UpdateCarRequest extends CarBaseRequest
      */
     public function rules(): array
     {
-        return $this->carRules();
+        return array_merge(
+            $this->carRules(),
+            [
+                'features' => 'nullable|array',
+
+                'features.*' => 'exists:features,id',
+            ]
+        );
     }
 }
