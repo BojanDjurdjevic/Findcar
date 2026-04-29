@@ -54,7 +54,7 @@ class CarResource extends JsonResource
                 'label' => ucfirst($this->status),
             ],
 
-            $this->features->map(fn($f) => [
+            'features' => $this->features->map(fn($f) => [
                 'id' => $f->id,
                 'name' => $f->name
             ]),
