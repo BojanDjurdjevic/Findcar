@@ -1,11 +1,19 @@
 <?php
 
 use App\Http\Controllers\Api\CarController;
-use App\Http\Controllers\CarImageController;
+use App\Http\Controllers\Api\CarImageController;
+use App\Http\Controllers\Api\CarMakeController;
+use App\Http\Controllers\Api\MetaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::apiResource('/cars', CarController::class)->only(['index', 'show']);
+
+Route::get('/meta/filters', [MetaController::class, 'filters']);
+
+Route::get('/makes', [CarMakeController::class, 'index']);
+
+Route::get('/makes/{make}/models', [CarMakeController::class, 'models']);
 
 Route::middleware(['auth:sanctum'])->group(function() {
     Route::get('/user', function (Request $request) {

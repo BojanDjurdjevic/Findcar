@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\Car;
 use App\Models\CarImage;
@@ -10,8 +10,7 @@ use App\Services\CarImageService;
 use App\Http\Requests\StoreCarImageRequest;
 use Illuminate\Support\Facades\Gate;
 
-class CarImageController
-extends Controller
+class CarImageController 
 {
    public function __construct(
       protected CarImageService $imageService
