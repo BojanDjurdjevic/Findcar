@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SearchCarRequest;
 use App\Http\Requests\StoreCarRequest;
+use App\Http\Requests\UpdateCarRequest;
 use App\Http\Resources\CarListResource;
 use App\Http\Resources\CarResource;
 use App\Models\Car;
@@ -14,6 +15,10 @@ use Illuminate\Http\Request;
 
 class CarController extends Controller
 {
+    public function __construct(
+        protected CarService $carService
+    ) {}
+
     public function index(SearchCarRequest $request)
     {
         $service = new CarSearchService();
@@ -24,9 +29,7 @@ class CarController extends Controller
 
     public function store(StoreCarRequest $request)
     {
-        $carService = new CarService();
-
-        $car = $carService->createListing($request->validated(), $request->file('images'));
+        $car = $this->carService->createListing($request->validated(), $request->file('images'));
 
         return new CarResource($car->load([
             'make',
@@ -56,13 +59,32 @@ class CarController extends Controller
         return new CarResource($car);
     }
 
-    public function update(Request $request, string $id)
-    {
-        //
+    public function update(UpdateCarRequest $request, Car $car)
+    {   
+        /*
+        if (auth()->id() !== $car->user_id) {
+            
+            return response()->json(['error' => 'You are not authorized to update this car!'], 403);
+        } */
+ 
+        abort_if(auth()->id() !== $car->user_id, 403, 'Unauthorized action!');
+
+        $updatedCar = $this->carService->updateListing($car, $request->validated());
+
+        return new CarResource($updatedCar);
     }
 
-    public function destroy(string $id)
+    public function destroy(Car $car)
     {
-        //
+        abort_if(
+            auth()->id() !== $car->user_id,
+            403
+        );
+
+        $this->carService->deleteListing($car);
+
+        return response()->json([
+            'message' => 'Car is successfully deleted.'
+        ]);
     }
 }

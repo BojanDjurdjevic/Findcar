@@ -64,4 +64,50 @@ class CarService
             }
         );
     }
+
+    public function updateListing(Car $car, array $data)
+    {
+        return DB::transaction(
+            function() use($car, $data) {
+                $featureIds = $data['features'] ?? [];
+
+                if(array_key_exists('features', $data)) {
+                    $this->syncFeatures(
+                        $car,
+                        $featureIds
+                    );
+                }
+
+                unset($data['features']);
+
+                if(isset($data['title'])) $data['slug'] = Str::slug($data['title'] . '-' . uniqid());
+                
+                $car->update($data);
+
+                return $car->load([
+                    'make',
+                    'model',
+                    'fuelType',
+                    'bodyType',
+                    'transmission',
+                    'features',
+                    'images',
+                    'user'
+                ]);
+            }
+        );
+    }
+
+    public function deleteListing(Car $car): void
+    {
+        $folder = "cars/{$car->id}";
+
+        DB::transaction(function() use($car){
+            $car->features()->detach();
+            $car->images()->delete();
+            $car->delete();
+        });
+
+        Storage::disk('public')->deleteDirectory($folder);
+    }
 }
