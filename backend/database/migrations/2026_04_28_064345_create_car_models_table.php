@@ -14,14 +14,14 @@ return new class extends Migration
         Schema::create('car_models', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('car_make_id')->constrained('car_makes')->cascadeOnDelete();
+            $table->foreignId('make_id')->constrained('car_makes')->cascadeOnDelete();
 
             $table->string('name', 64);
 
             $table->timestamps();
 
             $table->unique([
-                'car_make_id',
+                'make_id',
                 'name'
             ]);
         });

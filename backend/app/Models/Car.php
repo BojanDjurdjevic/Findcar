@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,6 +13,7 @@ class Car extends Model
 {
 
     use SoftDeletes;
+    use HasFactory;
     protected $fillable = [
         'user_id', 'make_id', 'model_id',
         'fuel_type_id', 'body_type_id', 'transmission_id',
