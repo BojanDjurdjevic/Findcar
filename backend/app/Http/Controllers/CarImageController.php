@@ -8,6 +8,7 @@ use App\Models\CarImage;
 use App\Services\CarImageService;
 
 use App\Http\Requests\StoreCarImageRequest;
+use Illuminate\Support\Facades\Gate;
 
 class CarImageController
 extends Controller
@@ -18,14 +19,26 @@ extends Controller
    ){}
 
    public function store(StoreCarImageRequest $request, Car $car) 
-   {
-    abort_if(auth()->id() !== $car->user_id, 403);
+    {
+        Gate::authorize('create', Car::class);
 
-    $this->imageService->addImages($car, $request->file('images'));
+        $this->imageService->addImages($car, $request->file('images'));
 
-    return response()->json([
-        'message' =>
-        'Images uploaded'
-    ]);
+        return response()->json([
+            'message' =>
+            'Images uploaded'
+        ]);
+    }
+
+    public function destroy(Car $car, CarImage $image)
+    {
+        Gate::authorize('delete', Car::class);
+
+        $this->imageService->deleteImage($car, $image);
+
+        return response()->json([
+            'message' =>
+            'Image is successfully deleted.'
+        ]);
     }
 }

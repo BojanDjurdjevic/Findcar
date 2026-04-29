@@ -9,9 +9,11 @@ use App\Http\Requests\UpdateCarRequest;
 use App\Http\Resources\CarListResource;
 use App\Http\Resources\CarResource;
 use App\Models\Car;
+use App\Policies\CarPolicy;
 use App\Services\CarSearchService;
 use App\Services\CarService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CarController extends Controller
 {
@@ -29,6 +31,8 @@ class CarController extends Controller
 
     public function store(StoreCarRequest $request)
     {
+        Gate::authorize('create', Car::class);
+        
         $car = $this->carService->createListing($request->validated(), $request->file('images'));
 
         return new CarResource($car->load([
@@ -61,13 +65,9 @@ class CarController extends Controller
 
     public function update(UpdateCarRequest $request, Car $car)
     {   
-        /*
-        if (auth()->id() !== $car->user_id) {
-            
-            return response()->json(['error' => 'You are not authorized to update this car!'], 403);
-        } */
- 
-        abort_if(auth()->id() !== $car->user_id, 403, 'Unauthorized action!');
+        //abort_if(auth()->id() !== $car->user_id, 403, 'Unauthorized action!');
+
+        Gate::authorize('update', Car::class);
 
         $updatedCar = $this->carService->updateListing($car, $request->validated());
 
@@ -76,10 +76,7 @@ class CarController extends Controller
 
     public function destroy(Car $car)
     {
-        abort_if(
-            auth()->id() !== $car->user_id,
-            403
-        );
+        Gate::authorize('delete', Car::class);
 
         $this->carService->deleteListing($car);
 
