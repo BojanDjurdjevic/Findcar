@@ -18,6 +18,7 @@ class StoreCarImageRequest extends FormRequest
             'images' => [
                 'required',
                 'array',
+                'min:1',
                 'max:10'
             ],
 

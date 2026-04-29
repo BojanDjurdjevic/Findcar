@@ -24,7 +24,7 @@ class CarImageController
 
         return response()->json([
             'message' =>
-            'Images uploaded'
+            'Images are successfully uploaded.'
         ]);
     }
 

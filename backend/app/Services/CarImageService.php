@@ -19,9 +19,9 @@ class CarImageService
       DB::transaction(
         function() use($car,$files){
 
-           $maxOrder =$car->images()->max('sort_order') ?? -1;
+           $maxOrder = $car->images()->max('sort_order') ?? -1;
 
-           $hasPrimary =$car->images()->where('is_primary', true)->exists();
+           $hasPrimary = $car->images()->where('is_primary', true)->exists();
 
            foreach($files as $index => $file) 
             {
