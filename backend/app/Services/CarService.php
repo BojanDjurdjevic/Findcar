@@ -4,7 +4,10 @@ namespace App\Services;
 
 use App\Models\Car;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Drivers\Gd\Driver;
+use Intervention\Image\ImageManager;
 
 class CarService
 {
@@ -15,8 +18,17 @@ class CarService
 
     protected function storeImages(Car $car, array $images): void
     {
+        $gd = new Driver();
+        $manager = new ImageManager($gd);
+
         foreach ($images as $index => $file) {
-            $path = $file->store('cars', 'public');
+            $fileName = uniqid() . ".webp";
+
+            $image = $manager->read($file)->toWebp(90)->toString();
+
+            $path = "cars/{$car->id}/{$fileName}";
+
+            Storage::disk('public')->put($path, $image);
 
             $car->images()->create([
                 'image_path' => $path,
