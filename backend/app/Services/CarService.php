@@ -46,7 +46,7 @@ class CarService
                 
                 unset($data['features']);
                 
-                $data['user_id'] = auth()->id;
+                $data['user_id'] = auth()->id();
 
                 $data['slug'] = Str::slug($data['title'] . '-' . uniqid());
 

@@ -22,7 +22,7 @@ class StoreCarRequest extends CarBaseRequest
 
                 'features.*' => 'exists:features,id',
 
-                'images' => 'required|array|min:1|max:10',
+                'images' => 'nullable|array|max:10',
 
                 'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120'
             ]
