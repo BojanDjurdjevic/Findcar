@@ -7,3 +7,7 @@ export const api = axios.create({
         'X-Requested-With': 'XMLHttpRequest',
     }
 })
+
+export async function getCsrfCooke() {
+    await api.get('sanctum/csrf-cookie')
+}
