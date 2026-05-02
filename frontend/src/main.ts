@@ -1,3 +1,5 @@
+import './style.css';
+
 import { Router } from './router/router';
 import { initApp } from './app';
 import { LoginPage } from './pages/login';

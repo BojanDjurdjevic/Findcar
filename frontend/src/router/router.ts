@@ -1,6 +1,7 @@
 // src/router/router.ts
 
 import { authStore } from '../store/auth.store';
+import { MainLayout } from '../ui/layouts/MainLayout';
 
 type Route = {
   path: string;
@@ -14,7 +15,6 @@ export class Router {
   constructor(root: HTMLElement) {
     this.root = root;
 
-    // back/forward dugmad u browseru
     window.addEventListener('popstate', () => {
       this.render();
     });
@@ -47,10 +47,16 @@ export class Router {
     this.root.innerHTML = '';
 
     if (route) {
-      const el = route.component();
-      this.root.appendChild(el);
+    const page = route.component();
+
+    if (window.location.pathname === '/login') {
+        this.root.appendChild(page);
     } else {
-      this.root.textContent = '404 Not Found';
+        this.root.appendChild(MainLayout(page));
+    }
+
+    } else {
+        this.root.textContent = '404 Not Found';
     }
   }
 }
