@@ -2,9 +2,9 @@ type User = {
     id: number,
     name: string,
     email: string,
-    phone: string,
-    city: string,
-    avatar: string
+    phone: string | null,
+    city: string | null,
+    avatar: string | null
 }
 
 class AuthStore {
