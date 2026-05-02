@@ -11,3 +11,19 @@ export const api = axios.create({
 export async function getCsrfCooke() {
     await api.get('sanctum/csrf-cookie')
 }
+
+api.defaults.xsrfCookieName = 'XSRF-TOKEN';
+api.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
+/*
+api.interceptors.request.use(config => {
+    const token = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('XSRF-TOKEN='))
+        ?.split('=')[1];
+
+    if (token) {
+        config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
+    }
+
+    return config;
+}); */
