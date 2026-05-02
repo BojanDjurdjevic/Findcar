@@ -14,7 +14,7 @@ export async function getCsrfCooke() {
 
 api.defaults.xsrfCookieName = 'XSRF-TOKEN';
 api.defaults.xsrfHeaderName = 'X-XSRF-TOKEN';
-/*
+
 api.interceptors.request.use(config => {
     const token = document.cookie
         .split('; ')
@@ -26,4 +26,4 @@ api.interceptors.request.use(config => {
     }
 
     return config;
-}); */
+}); 

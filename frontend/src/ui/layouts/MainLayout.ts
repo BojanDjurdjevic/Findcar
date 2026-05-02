@@ -14,6 +14,11 @@ export function MainLayout(content: HTMLElement): HTMLElement {
           AutoMarket
         </div>
 
+        <a href="#" id="nav-cars"
+          class="text-gray-700 hover:text-black">
+          Cars
+        </a>
+
         <div class="flex items-center gap-4">
           <span class="text-gray-600">
             ${authStore.user?.name ?? ''}
@@ -34,6 +39,14 @@ export function MainLayout(content: HTMLElement): HTMLElement {
   
   const contentEl = wrapper.querySelector('#app-content')!;
   contentEl.appendChild(content);
+
+  //carsPage:
+
+  wrapper.querySelector('#nav-cars')!
+  .addEventListener('click', (e) => {
+    e.preventDefault();
+    router.navigate('/cars');
+  });
 
   // logout
   wrapper.querySelector('#logout-btn')!
