@@ -1,5 +1,5 @@
 import { api } from '../api/axios';
-import type { Car } from '../types/car.types';
+import type { Car, CarPayload } from '../types/car.types';
 
 export const carService = {
   async getAll(): Promise<Car[]> {
@@ -13,12 +13,12 @@ export const carService = {
     return res.data.data ?? res.data;
   },
 
-  async create(data: Partial<Car>): Promise<Car> {
+  async create(data: CarPayload): Promise<Car> {
     const res = await api.post('/api/cars', data);
     return res.data.data ?? res.data;
   },
 
-  async update(id: number, data: Partial<Car>): Promise<Car> {
+  async update(id: number, data: CarPayload): Promise<Car> {
     const res = await api.put(`/api/cars/${id}`, data);
     return res.data.data ?? res.data;
   },

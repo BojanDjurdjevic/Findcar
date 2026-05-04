@@ -1,0 +1,139 @@
+import { carService } from '../services/car.service';
+import { metaService } from '../services/meta.service';
+import { router } from '../main';
+import type { CarPayload } from '../types/car.types';
+
+export function CarFormPage(params?: Record<string, string>): HTMLElement {
+  const wrapper = document.createElement('div');
+
+  const isEdit = !!params?.id;
+
+  wrapper.innerHTML = `
+    <h1 class="text-2xl font-semibold mb-4">
+      ${isEdit ? 'Edit Car' : 'Create Car'}
+    </h1>
+
+    <div id="form" class="bg-white p-6 rounded shadow max-w-lg">
+      Loading form...
+    </div>
+  `;
+
+  // select helper func
+  function createSelect(
+    id: string,
+    options: { id: number; name: string }[]
+  ): HTMLSelectElement {
+
+    const select = document.createElement('select');
+    select.id = id;
+    select.className = 'border p-2 w-full mb-3';
+
+    options.forEach(opt => {
+      const o = document.createElement('option');
+      o.value = String(opt.id);
+      o.textContent = opt.name;
+      select.appendChild(o);
+    });
+
+    return select;
+  }
+
+  // input helper - for now here, later in utils...
+
+  function createInput(id: string, placeholder: string, type = 'text') {
+    const input = document.createElement('input');
+    input.id = id;
+    input.placeholder = placeholder;
+    input.type = type;
+    input.className = 'border p-2 w-full mb-3';
+    return input;
+  }
+
+  const form = wrapper.querySelector('#form')!;
+
+  metaService.getAll().then(async meta => {
+
+    form.innerHTML = '';
+
+    // SELECTS
+    const make = createSelect('make_id', meta.makes);
+    const model = createSelect('model_id', meta.models);
+    const fuel = createSelect('fuel_type_id', meta.fuel_types);
+    const body = createSelect('body_type_id', meta.body_types);
+    const transmission = createSelect('transmission_id', meta.transmissions);
+
+    // INPUTS
+    const title = createInput('title', 'Title');
+    const year = createInput('year', 'Year', 'number');
+    const price = createInput('price', 'Price', 'number');
+    const mileage = createInput('mileage', 'Mileage', 'number');
+    const location = createInput('location', 'Location');
+
+    const btn = document.createElement('button');
+    btn.textContent = isEdit ? 'Update' : 'Create';
+    btn.className = 'bg-blue-500 text-white w-full py-2 rounded';
+
+    // EDIT
+    if (isEdit) {
+      const car = await carService.getOne(Number(params!.id));
+
+      make.value = String(car.make.id);
+      model.value = String(car.model.id);
+      fuel.value = String(car.fuel_type.id);
+      body.value = String(car.body_type.id);
+      transmission.value = String(car.transmission.id);
+
+      title.value = car.title;
+      year.value = String(car.year);
+      price.value = String(car.price);
+      mileage.value = String(car.mileage);
+      location.value = car.location;
+    }
+
+    // SUBMIT
+    btn.addEventListener('click', async () => {
+      const data: CarPayload = {
+        make_id: Number(make.value),
+        model_id: Number(model.value),
+        fuel_type_id: Number(fuel.value),
+        body_type_id: Number(body.value),
+        transmission_id: Number(transmission.value),
+
+        title: title.value,
+        year: Number(year.value),
+        price: Number(price.value),
+        mileage: Number(mileage.value),
+        location: location.value,
+      };
+
+      try {
+        if (isEdit) {
+          await carService.update(Number(params!.id), data);
+        } else {
+          await carService.create(data);
+        }
+
+        router.navigate('/cars');
+      } catch (e) {
+        console.error(e);
+        alert('Validation failed');
+      }
+    });
+
+    form.append(
+      make,
+      model,
+      fuel,
+      body,
+      transmission,
+      title,
+      year,
+      price,
+      mileage,
+      location,
+      btn
+    );
+  });
+
+  return wrapper;
+}

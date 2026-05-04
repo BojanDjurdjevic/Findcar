@@ -1,3 +1,4 @@
+import { router } from "../../main";
 import type { Car } from "../../types/car.types";
 
 
@@ -21,6 +22,16 @@ export function CarCard(car: Car): HTMLElement {
       €${car.price}
     </div>
   `;
+
+  const editBtn = document.createElement('button');
+  editBtn.textContent = 'Edit';
+  editBtn.className = 'text-sm text-blue-500';
+
+  editBtn.addEventListener('click', () => {
+    router.navigate(`/cars/${car.id}/edit`);
+  });
+
+  div.appendChild(editBtn);
 
   return div;
 }

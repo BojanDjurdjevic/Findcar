@@ -5,6 +5,7 @@ import { initApp } from './app';
 import { LoginPage } from './pages/login';
 import { DashboardPage } from './pages/dashboard';
 import { CarsPage } from './pages/cars';
+import { CarFormPage } from './pages/car-form';
 
 const root = document.querySelector('#app') as HTMLElement;
 
@@ -23,6 +24,16 @@ router.register({
 router.register({
   path: '/cars',
   component: CarsPage,
+});
+
+router.register({
+  path: '/cars/create',
+  component: CarFormPage,
+});
+
+router.register({
+  path: '/cars/:id/edit',
+  component: CarFormPage,
 });
 
 
