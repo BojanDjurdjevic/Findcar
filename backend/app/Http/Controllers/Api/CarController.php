@@ -29,6 +29,15 @@ class CarController extends Controller
         return CarListResource::collection($cars);
     }
 
+    public function myCars()
+    {
+        return CarResource::collection(
+            Car::where('user_id', auth()->id())
+                ->latest()
+                ->get()
+        );
+    }
+
     public function store(StoreCarRequest $request)
     {
         Gate::authorize('create', Car::class);

@@ -17,6 +17,10 @@ class AuthStore {
     get isAuthenticated() {
         return !!this.user
     }
+
+    get userId() {
+        return this.user?.id;
+    }
 }
 
 export const authStore = new AuthStore()

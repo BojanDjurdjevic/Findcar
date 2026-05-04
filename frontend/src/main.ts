@@ -6,6 +6,7 @@ import { LoginPage } from './pages/login';
 import { DashboardPage } from './pages/dashboard';
 import { CarsPage } from './pages/cars';
 import { CarFormPage } from './pages/car-form';
+import { MyCarsPage } from './pages/mycars';
 
 const root = document.querySelector('#app') as HTMLElement;
 
@@ -24,6 +25,11 @@ router.register({
 router.register({
   path: '/cars',
   component: CarsPage,
+});
+
+router.register({
+  path: '/my-cars',
+  component: MyCarsPage
 });
 
 router.register({

@@ -22,6 +22,8 @@ Route::middleware(['auth:sanctum'])->group(function() {
 
     Route::apiResource('/cars', CarController::class)->except(['index', 'show']);
 
+    Route::get('/my-cars', [CarController::class, 'myCars']);
+
     Route::post('/cars/{car}/images', [CarImageController::class,'store']);
 
     Route::delete('/cars/{car}/images/{image}', [CarImageController::class,'destroy']);

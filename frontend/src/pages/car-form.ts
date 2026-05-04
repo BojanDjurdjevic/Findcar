@@ -161,6 +161,9 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
       };
 
       try {
+        btn.disabled = true;
+        btn.textContent = 'Saving...';
+
         if (isEdit) {
           await carService.update(Number(params!.id), data);
         } else {
@@ -168,9 +171,26 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
         }
 
         router.navigate('/cars');
-      } catch (e) {
-        console.error(e);
-        alert('Validation failed');
+      } catch (e: any) {
+
+        console.log('FULL ERROR:', e);
+
+        const status = e?.response?.status;
+
+        if (status === 403) {
+          alert('You are not allowed to edit this car');
+          return;
+        }
+
+        if (status === 422) {
+          alert('Validation error');
+          return;
+        }
+
+        btn.disabled = false;
+        btn.textContent = isEdit ? 'Update' : 'Create';
+
+        alert('Unexpected error');
       }
     });
 

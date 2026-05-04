@@ -23,7 +23,7 @@ export function CarCard(car: Car): HTMLElement {
       €${car.price}
     </div>
   `;
-  //if(car.user_id === authStore.user?.id) {
+  if(car.user_id === authStore.user?.id) {
     const editBtn = document.createElement('button');
     editBtn.textContent = 'Edit';
     editBtn.className = 'text-sm text-blue-500';
@@ -33,7 +33,7 @@ export function CarCard(car: Car): HTMLElement {
     });
 
     div.appendChild(editBtn);
-  //}
+  }
   
 
   return div;

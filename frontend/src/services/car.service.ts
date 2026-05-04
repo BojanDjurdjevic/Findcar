@@ -12,6 +12,11 @@ export const carService = {
     const res = await api.get(`/api/cars/${id}`);
     return res.data.data ?? res.data;
   },
+  
+  async myCars() {
+    const res = await api.get('/api/my-cars');
+    return res.data.data ?? res.data;
+  },
 
   async create(data: CarPayload): Promise<Car> {
     const res = await api.post('/api/cars', data);

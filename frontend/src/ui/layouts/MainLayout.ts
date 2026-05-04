@@ -19,6 +19,11 @@ export function MainLayout(content: HTMLElement): HTMLElement {
           Cars
         </a>
 
+        <a href="#" id="nav-my-cars"
+          class="text-gray-700 hover:text-black">
+          My Cars
+        </a>
+
         <div class="flex items-center gap-4">
           <span class="text-gray-600">
             ${authStore.user?.name ?? ''}
@@ -46,6 +51,20 @@ export function MainLayout(content: HTMLElement): HTMLElement {
   .addEventListener('click', (e) => {
     e.preventDefault();
     router.navigate('/cars');
+  });
+
+  //my-cars:
+
+  const myCarsLink = wrapper.querySelector('#nav-my-cars') as HTMLElement;
+
+  if (!authStore.isAuthenticated) {
+    myCarsLink.style.display = 'none';
+  }
+
+  wrapper.querySelector('#nav-my-cars')!
+  .addEventListener('click', (e) => {
+    e.preventDefault();
+    router.navigate('/my-cars');
   });
 
   // logout
