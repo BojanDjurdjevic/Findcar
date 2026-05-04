@@ -43,7 +43,7 @@ class CarController extends Controller
             'transmission',
             'features',
             'images',
-            'user'
+            'user' => $car->user()
         ]));
     }
 
@@ -67,7 +67,7 @@ class CarController extends Controller
     {   
         //abort_if(auth()->id() !== $car->user_id, 403, 'Unauthorized action!');
 
-        Gate::authorize('update', Car::class);
+        Gate::authorize('update', $car);
 
         $updatedCar = $this->carService->updateListing($car, $request->validated());
 

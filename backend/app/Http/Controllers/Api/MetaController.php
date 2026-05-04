@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\CarMake;
 use App\Models\FuelType;
 use App\Models\BodyType;
+use App\Models\Car;
 use App\Models\Transmission;
 use App\Models\Feature;
 
@@ -24,7 +25,9 @@ class MetaController
 
          'transmissions' => Transmission::select('id', 'name')->get(),
 
-         'features' => Feature::select('id', 'name')->get()
+         'features' => Feature::select('id', 'name')->get(),
+
+         'user' => Car::select('user_id')->get()
       ]);
    }
 }

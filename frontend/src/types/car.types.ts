@@ -19,6 +19,7 @@ export type Car = {
   fuel_type: Option;
   body_type: Option;
   transmission: Option;
+  user_id: number;
 };
 
 export type CarPayload = {

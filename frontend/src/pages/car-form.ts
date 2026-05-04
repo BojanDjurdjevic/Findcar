@@ -2,6 +2,7 @@ import { carService } from '../services/car.service';
 import { metaService } from '../services/meta.service';
 import { router } from '../main';
 import type { CarPayload } from '../types/car.types';
+import { api } from '../api/axios';
 
 export function CarFormPage(params?: Record<string, string>): HTMLElement {
   const wrapper = document.createElement('div');
@@ -27,7 +28,7 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
     const select = document.createElement('select');
     select.id = id;
     select.className = 'border p-2 w-full mb-3';
-
+    
     options.forEach(opt => {
       const o = document.createElement('option');
       o.value = String(opt.id);
@@ -39,7 +40,7 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
   }
 
   // input helper - for now here, later in utils...
-
+  
   function createInput(id: string, placeholder: string, type = 'text') {
     const input = document.createElement('input');
     input.id = id;
@@ -47,27 +48,65 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
     input.type = type;
     input.className = 'border p-2 w-full mb-3';
     return input;
+  } 
+
+  function createField(
+    labelText: string,
+    input: HTMLInputElement | HTMLSelectElement
+  ): HTMLElement {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'mb-4';
+
+    const label = document.createElement('label');
+    label.textContent = labelText;
+    label.className = 'block text-sm font-medium mb-1 text-gray-700';
+
+    wrapper.appendChild(label);
+    wrapper.appendChild(input);
+
+    return wrapper;
   }
 
   const form = wrapper.querySelector('#form')!;
 
   metaService.getAll().then(async meta => {
 
+    console.log('META:', meta);
+
     form.innerHTML = '';
 
     // SELECTS
     const make = createSelect('make_id', meta.makes);
-    const model = createSelect('model_id', meta.models);
+    const model = createSelect('model_id', []);
+    make.addEventListener('change', async () => {
+      const makeId = make.value;
+
+      const res = await api.get(`/api/makes/${makeId}/models`);
+
+      const models = res.data;
+
+      model.innerHTML = '';
+
+      models.forEach((m: any) => {
+        const opt = document.createElement('option');
+        opt.value = String(m.id);
+        opt.textContent = m.name;
+        model.appendChild(opt);
+      });
+    });
+
+    
     const fuel = createSelect('fuel_type_id', meta.fuel_types);
     const body = createSelect('body_type_id', meta.body_types);
     const transmission = createSelect('transmission_id', meta.transmissions);
-
-    // INPUTS
+ 
+    // INPUTS 
+    
     const title = createInput('title', 'Title');
     const year = createInput('year', 'Year', 'number');
     const price = createInput('price', 'Price', 'number');
     const mileage = createInput('mileage', 'Mileage', 'number');
-    const location = createInput('location', 'Location');
+    const location = createInput('location', 'Location'); 
 
     const btn = document.createElement('button');
     btn.textContent = isEdit ? 'Update' : 'Create';
@@ -78,7 +117,22 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
       const car = await carService.getOne(Number(params!.id));
 
       make.value = String(car.make.id);
+
+      const res = await api.get(`/api/makes/${car.make.id}/models`);
+      const models = res.data;
+
+      model.innerHTML = '';
+
+      models.forEach((m: any) => {
+        const opt = document.createElement('option');
+        opt.value = String(m.id);
+        opt.textContent = m.name;
+        model.appendChild(opt);
+      });
+
       model.value = String(car.model.id);
+
+      //model.value = String(car.model.id);
       fuel.value = String(car.fuel_type.id);
       body.value = String(car.body_type.id);
       transmission.value = String(car.transmission.id);
@@ -121,16 +175,16 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
     });
 
     form.append(
-      make,
-      model,
-      fuel,
-      body,
-      transmission,
-      title,
-      year,
-      price,
-      mileage,
-      location,
+      createField('Make', make),
+      createField('Model', model),
+      createField('Fuel', fuel),
+      createField('Body', body),
+      createField('Transmission', transmission),
+      createField('Title', title),
+      createField('Year', year),
+      createField('Price', price),
+      createField('Mileage', mileage),
+      createField('Location', location),
       btn
     );
   });

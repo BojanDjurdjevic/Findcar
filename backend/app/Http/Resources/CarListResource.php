@@ -22,6 +22,8 @@ class CarListResource extends JsonResource
             'image' => $this->images->first()
                 ? Storage::url($this->images->first()->image_path)
                 : null,
+            
+            'user_id' => $this->user_id
         ];
     }
 }
