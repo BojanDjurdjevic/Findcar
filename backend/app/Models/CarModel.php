@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class CarModel extends Model
 {
     protected $fillable = [
-        'car_make_id',
+        'make_id',
         'name'
     ];
 
     public function make(): BelongsTo
     {
-        return $this->belongsTo(CarMake::class);
+        return $this->belongsTo(CarMake::class, 'make_id');
     }
 
     public function cars(): HasMany

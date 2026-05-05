@@ -1,11 +1,16 @@
 import { api } from '../api/axios';
-import type { Car, CarPayload } from '../types/car.types';
+import type { Car, CarPayload, PaginatedCars } from '../types/car.types';
 
 export const carService = {
   async getAll(): Promise<Car[]> {
     const res = await api.get('/api/cars');
     console.log(res.data)
     return res.data.data; 
+  },
+
+  async getByFilter(query = ''): Promise<PaginatedCars> {
+    const res = await api.get(`/api/cars?${query}`);
+    return res.data;
   },
 
   async getOne(id: number): Promise<Car> {

@@ -9,20 +9,27 @@ class CarSearchService
 {
     public function search(array $filters)
     {
-        $query = Car::query()
-        ->with([
-            'make',
-            'model',
-            'fuelType',
-            'bodyType',
-            'transmission',
-            'features',
-            'images',
-            'user'
-        ]);
+        try {
+            $query = Car::query()
+            ->with([
+                'make',
+                'model',
+                'fuelType',
+                'bodyType',
+                'transmission',
+                'features',
+                'images',
+                'user'
+            ]);
 
-        $query = (new CarFilter)->apply($query, $filters);
+            $query = (new CarFilter)->apply($query, $filters);
 
-        return $query->paginate(15);
+            //dd($query->toSql(), $query->getBindings());
+
+            return $query->paginate(15);
+        } catch (\Throwable $e) {
+            dd($e->getMessage(), $e->getTraceAsString());
+        }
+        
     }
 }

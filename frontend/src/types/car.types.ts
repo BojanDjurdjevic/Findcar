@@ -48,3 +48,8 @@ export type Feature = {
   id: number;
   name: string;
 };
+
+export type PaginatedCars = {
+  data: Car[];
+  meta: any;
+}
