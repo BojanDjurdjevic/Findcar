@@ -35,10 +35,10 @@ export type CarPayload = {
   mileage: number;
   location: string;
 
-  engine_size?: number;
-  horsepower?: number;
-  color?: string;
-  description?: string;
+  engine_size?: number | null;
+  horsepower?: number | null;
+  color?: string | null;
+  description?: string | null;
 
   features?: number[];
 };

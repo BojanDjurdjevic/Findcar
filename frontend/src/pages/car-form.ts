@@ -54,7 +54,7 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
 
   function createField(
     labelText: string,
-    input: HTMLInputElement | HTMLSelectElement
+    input: HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
   ): HTMLElement {
     const wrapper = document.createElement('div');
     wrapper.className = 'mb-4';
@@ -110,6 +110,15 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
     const mileage = createInput('mileage', 'Mileage', 'number');
     const location = createInput('location', 'Location'); 
 
+    // Form inputs PART II:
+    const engineSize = createInput('engine_size', 'Engine size (e.g. 2.0)');
+    const horsepower = createInput('horsepower', 'Horsepower', 'number');
+    const color = createInput('color', 'Color');
+    const description = document.createElement('textarea');
+    description.id = 'description';
+    description.placeholder = 'Description';
+    description.className = 'border p-2 w-full mb-3';
+
     const btn = document.createElement('button');
     btn.textContent = isEdit ? 'Update' : 'Create';
     btn.className = 'bg-blue-500 text-white w-full py-2 rounded';
@@ -133,8 +142,6 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
       });
 
       model.value = String(car.model.id);
-
-      //model.value = String(car.model.id);
       fuel.value = String(car.fuel_type.id);
       body.value = String(car.body_type.id);
       transmission.value = String(car.transmission.id);
@@ -144,6 +151,13 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
       price.value = String(car.price);
       mileage.value = String(car.mileage);
       location.value = car.location;
+
+      // Form inputs in edit Part II:
+
+      engineSize.value = String(car.engine_size) ?? '';
+      horsepower.value = car.horsepower ? String(car.horsepower) : '';
+      color.value = String(car.color) ?? '';
+      description.value = String(car.description) ?? '';
     }
 
     // SUBMIT
@@ -160,6 +174,13 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
         price: Number(price.value),
         mileage: Number(mileage.value),
         location: location.value,
+
+        // part II:
+
+        engine_size: engineSize.value ? Number(engineSize.value) : null,
+        horsepower: horsepower.value ? Number(horsepower.value) : null,
+        color: color.value || null,
+        description: description.value || null,
       };
 
       showLoading();
@@ -207,6 +228,11 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
       createField('Price', price),
       createField('Mileage', mileage),
       createField('Location', location),
+      //part II
+      createField('Engine size', engineSize),
+      createField('Horsepower', horsepower),
+      createField('Color', color),
+      createField('Car description', description),
       btn
     );
   });
