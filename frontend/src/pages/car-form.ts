@@ -1,7 +1,7 @@
 import { carService } from '../services/car.service';
 import { metaService } from '../services/meta.service';
 import { router } from '../main';
-import type { CarPayload } from '../types/car.types';
+import type { CarPayload, Feature } from '../types/car.types';
 import { api } from '../api/axios';
 import { Toast } from '../utils/toast';
 import { hideLoading, showLoading } from '../ui/layouts/Overlay';
@@ -123,6 +123,44 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
     btn.textContent = isEdit ? 'Update' : 'Create';
     btn.className = 'bg-blue-500 text-white w-full py-2 rounded';
 
+    // Part III (features - check):
+
+    const featuresWrapper = document.createElement('div');
+    featuresWrapper.className = 'mb-4';
+
+    const featuresTitle = document.createElement('p');
+    featuresTitle.textContent = 'Features';
+    featuresTitle.className = 'text-sm font-medium mb-2 text-gray-700';
+
+    featuresWrapper.appendChild(featuresTitle);
+
+    const selectedFeatures: number[] = [];
+
+    meta.features.forEach((f: Feature )  => {
+      const label = document.createElement('label');
+      label.className = 'flex items-center gap-2 text-sm mb-1';
+
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.value = String(f.id);
+
+      checkbox.addEventListener('change', () => {
+        const id = Number(checkbox.value);
+
+        if (checkbox.checked) {
+          selectedFeatures.push(id);
+        } else {
+          const index = selectedFeatures.indexOf(id);
+          if (index > -1) selectedFeatures.splice(index, 1);
+        }
+      });
+
+      label.appendChild(checkbox);
+      label.append(f.name);
+
+      featuresWrapper.appendChild(label);
+    });
+
     // EDIT
     if (isEdit) {
       const car = await carService.getOne(Number(params!.id));
@@ -158,6 +196,16 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
       horsepower.value = car.horsepower ? String(car.horsepower) : '';
       color.value = String(car.color) ?? '';
       description.value = String(car.description) ?? '';
+
+      // Part III - features:
+
+      selectedFeatures.push(...car.features.map((f: Feature) => f.id));
+
+      featuresWrapper.querySelectorAll('input[type="checkbox"]').forEach((el: any) => {
+        if (selectedFeatures.includes(Number(el.value))) {
+          el.checked = true;
+        }
+      });
     }
 
     // SUBMIT
@@ -181,6 +229,10 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
         horsepower: horsepower.value ? Number(horsepower.value) : null,
         color: color.value || null,
         description: description.value || null,
+
+        //part III
+
+        features: selectedFeatures ?? [],
       };
 
       showLoading();
@@ -233,6 +285,7 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
       createField('Horsepower', horsepower),
       createField('Color', color),
       createField('Car description', description),
+      featuresWrapper,
       btn
     );
   });

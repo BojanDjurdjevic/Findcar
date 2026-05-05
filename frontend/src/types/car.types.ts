@@ -13,6 +13,7 @@ export type Car = {
   horsepower?: number;
   color?: string;
   description?: string;
+  features: [];
 
   make: Option;
   model: Option;
@@ -41,4 +42,9 @@ export type CarPayload = {
   description?: string | null;
 
   features?: number[];
+};
+
+export type Feature = {
+  id: number;
+  name: string;
 };
