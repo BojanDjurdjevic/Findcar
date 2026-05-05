@@ -83,6 +83,11 @@ export class Router {
         this.root.appendChild(MainLayout(page));
       }
 
+      if (path === '/') {
+        this.navigate('/cars');
+        return;
+      }
+
     } else {
       this.root.textContent = '404';
     }

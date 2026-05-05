@@ -1,6 +1,7 @@
 import { authStore } from '../store/auth.store';
 import { authService } from '../services/auth.service';
 import { router } from '../main';
+import { Toast } from '../utils/toast';
 
 export function DashboardPage(): HTMLElement {
   const div = document.createElement('div');
@@ -12,7 +13,7 @@ export function DashboardPage(): HTMLElement {
       </h1>
 
       <button id="logout"
-        class="bg-red-500 text-white px-4 py-2">
+        class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2">
         Logout
       </button>
     </div>
@@ -20,9 +21,11 @@ export function DashboardPage(): HTMLElement {
 
   div.querySelector('#logout')!
     .addEventListener('click', async () => {
+      let name = authStore.user?.name
       await authService.logout();
       authStore.setUser(null);
-      router.navigate('/login');
+      Toast.success(`Good bye ${name} !`)
+      router.navigate('/cars');
     });
 
   return div;

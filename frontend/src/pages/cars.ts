@@ -1,6 +1,7 @@
 import { carService } from '../services/car.service';
 import { CarCard } from '../ui/components/CarCard';
 import { router } from '../main';
+import { authStore } from '../store/auth.store';
 
 export function CarsPage(): HTMLElement {
   const wrapper = document.createElement('div');
@@ -21,6 +22,7 @@ export function CarsPage(): HTMLElement {
   `;
 
   const list = wrapper.querySelector('#cars-list')!;
+  const addCarBtn = wrapper.querySelector('#create-btn') as HTMLButtonElement;
 
   // fetch data
   carService.getAll()
@@ -37,10 +39,15 @@ export function CarsPage(): HTMLElement {
     });
 
   // create button
-  wrapper.querySelector('#create-btn')!
+  if(!authStore.isAuthenticated) {
+    addCarBtn.style.display = 'none'
+  } else {
+    wrapper.querySelector('#create-btn')!
     .addEventListener('click', () => {
       router.navigate('/cars/create');
     });
+  }
+  
 
   return wrapper;
 }

@@ -6,8 +6,10 @@ export async function initApp() {
   try {
     const user = await authService.me();
     authStore.setUser(user);
-    router.navigate('/dashboard');
+    //router.navigate('/dashboard');
   } catch {
-    router.navigate('/login');
+    authStore.setUser(null);
   }
+
+  router.render()
 }

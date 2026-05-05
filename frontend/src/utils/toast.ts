@@ -24,7 +24,8 @@ export class Toast {
     }, 2500);
   }
 
-  static success(msg: string) {
+  static success(msg: string, name?: string | undefined) {
+    if(name) msg = msg + name
     this.show(msg, 'success');
   }
 
