@@ -1,6 +1,10 @@
 import { router } from "../../main";
+import { carService } from "../../services/car.service";
 import { authStore } from "../../store/auth.store";
 import type { Car } from "../../types/car.types";
+import { Toast } from "../../utils/toast";
+import { hideLoading, showLoading } from "../layouts/Overlay";
+import { confirmModal } from "./ConfirmModal";
 
 
 export function CarCard(car: Car): HTMLElement {
@@ -23,6 +27,7 @@ export function CarCard(car: Car): HTMLElement {
       €${car.price}
     </div>
   `;
+
   if(car.user_id === authStore.user?.id) {
     const editBtn = document.createElement('button');
     editBtn.textContent = 'Edit';
@@ -35,6 +40,48 @@ export function CarCard(car: Car): HTMLElement {
     div.appendChild(editBtn);
   }
   
+  if (car.user_id === authStore.userId) {
+
+  const deleteBtn = document.createElement('button');
+    deleteBtn.textContent = 'Delete';
+    deleteBtn.className = 'text-red-500 text-sm';
+
+    deleteBtn.onclick = async () => {
+
+      const confirmed = await confirmModal('Are you sure you want to delete this car?');
+
+      if (!confirmed) return;
+
+      showLoading();
+
+      try {
+        deleteBtn.disabled = true;
+        deleteBtn.textContent = 'Deleting...';
+
+        await carService.delete(car.id);
+
+        Toast.success('Car deleted');
+
+        div.remove();
+
+      } catch (e: any) {
+        const status = e?.response?.status;
+
+        if (status === 403) {
+          Toast.error('Not allowed');
+        } else {
+          Toast.error('Delete failed');
+        }
+
+      } finally {
+        hideLoading();
+        deleteBtn.disabled = false;
+        deleteBtn.textContent = 'Delete';
+      }
+    };
+
+    div.appendChild(deleteBtn);
+  }
 
   return div;
 }

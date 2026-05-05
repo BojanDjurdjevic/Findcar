@@ -85,7 +85,7 @@ class CarController extends Controller
 
     public function destroy(Car $car)
     {
-        Gate::authorize('delete', Car::class);
+        Gate::authorize('delete', $car);
 
         $this->carService->deleteListing($car);
 
