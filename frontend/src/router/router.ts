@@ -6,6 +6,9 @@ import { MainLayout } from '../ui/layouts/MainLayout';
 type Route = {
   path: string;
   component: (params?: Record<string, string>) => HTMLElement;
+  meta?: {
+    auth?: boolean;
+  }
 };
 
 export class Router {
@@ -25,19 +28,10 @@ export class Router {
   }
 
   navigate(path: string) {
-    // Routes protect:
-    if (!authStore.isAuthenticated && path !== '/login') {
-      history.pushState({}, '', '/login');
-    } else {
-      history.pushState({}, '', path);
-    }
+    history.pushState({}, '', path);
 
     this.render();
   }
-  /*
-  private match(path: string): Route | undefined {
-    return this.routes.find(r => r.path === path);
-  } */
 
   private match(path: string): {route: Route; params: Record<string, string>} | null {
     for (const route of this.routes) {
@@ -64,48 +58,33 @@ export class Router {
 
     return null
   }
-  /*
+
   render() {
     const path = window.location.pathname;
 
-    const route = this.match(path);
+    const result = this.match(path);
 
     this.root.innerHTML = '';
 
-    if (route) {
-    const page = route.component();
-
-    if (window.location.pathname === '/login') {
-        this.root.appendChild(page);
-    } else {
-        this.root.appendChild(MainLayout(page));
-    }
-
-    } else {
-        this.root.textContent = '404 Not Found';
-    }
-  }*/
-
-  render() {
-    const path = window.location.pathname
-
-    const result = this.match(path);
-
-    this.root.innerHTML = ''
-
     if (result) {
-      const { route, params } = result
+      const { route, params } = result;
 
-      const page = route.component(params)
+      // AUTH check:
+      if (route.meta?.auth && !authStore.isAuthenticated) {
+        this.navigate('/login');
+        return;
+      }
+
+      const page = route.component(params);
 
       if (path === '/login') {
-        this.root.appendChild(page)
+        this.root.appendChild(page);
       } else {
-        this.root.appendChild(MainLayout(page))
+        this.root.appendChild(MainLayout(page));
       }
 
     } else {
-      this.root.textContent = '404'
+      this.root.textContent = '404';
     }
   }
 } 

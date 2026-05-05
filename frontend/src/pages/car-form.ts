@@ -3,6 +3,8 @@ import { metaService } from '../services/meta.service';
 import { router } from '../main';
 import type { CarPayload } from '../types/car.types';
 import { api } from '../api/axios';
+import { Toast } from '../utils/toast';
+import { hideLoading, showLoading } from '../ui/layouts/Overlay';
 
 export function CarFormPage(params?: Record<string, string>): HTMLElement {
   const wrapper = document.createElement('div');
@@ -160,37 +162,37 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
         location: location.value,
       };
 
-      try {
-        btn.disabled = true;
-        btn.textContent = 'Saving...';
+      showLoading();
 
+      try {
         if (isEdit) {
           await carService.update(Number(params!.id), data);
+          Toast.success('Car updated successfully');
         } else {
           await carService.create(data);
+          Toast.success('Car created successfully');
         }
 
         router.navigate('/cars');
-      } catch (e: any) {
 
-        console.log('FULL ERROR:', e);
+      } catch (e: any) {
+        console.error(e);
 
         const status = e?.response?.status;
 
         if (status === 403) {
-          alert('You are not allowed to edit this car');
+          Toast.error('You are not allowed to edit this car');
           return;
         }
 
         if (status === 422) {
-          alert('Validation error');
+          Toast.error('Validation failed');
           return;
         }
 
-        btn.disabled = false;
-        btn.textContent = isEdit ? 'Update' : 'Create';
-
-        alert('Unexpected error');
+        Toast.error('Something went wrong');
+      } finally {
+        hideLoading()
       }
     });
 

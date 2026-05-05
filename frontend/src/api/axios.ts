@@ -1,4 +1,5 @@
 import axios from "axios";
+import { hideLoading, showLoading } from "../ui/layouts/Overlay";
 
 export const api = axios.create({
     baseURL: "http://127.0.0.1:8000",
@@ -25,5 +26,18 @@ api.interceptors.request.use(config => {
         config.headers['X-XSRF-TOKEN'] = decodeURIComponent(token);
     }
 
+    showLoading();
+
     return config;
 }); 
+
+api.interceptors.response.use(
+  res => {
+    hideLoading();
+    return res;
+  },
+  err => {
+    hideLoading();
+    return Promise.reject(err);
+  }
+);

@@ -29,7 +29,8 @@ router.register({
 
 router.register({
   path: '/my-cars',
-  component: MyCarsPage
+  component: MyCarsPage,
+  meta: { auth: true }
 });
 
 router.register({

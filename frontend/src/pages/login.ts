@@ -1,6 +1,8 @@
 import { authService } from '../services/auth.service';
 import { authStore } from '../store/auth.store';
 import { router } from '../main';
+import { Toast } from '../utils/toast';
+import { hideLoading, showLoading } from '../ui/layouts/Overlay';
 
 export function LoginPage(): HTMLElement {
   const div = document.createElement('div');
@@ -30,14 +32,20 @@ export function LoginPage(): HTMLElement {
     const email = (div.querySelector('#email') as HTMLInputElement).value;
     const password = (div.querySelector('#password') as HTMLInputElement).value;
 
+    showLoading()
+
     try {
       const user = await authService.login(email, password);
 
       authStore.setUser(user);
 
+      Toast.success('Welcome back!');
+
       router.navigate('/dashboard');
     } catch (e) {
-      alert('Login failed');
+      Toast.error('Invalid credentials');
+    } finally {
+      hideLoading()
     }
   });
 

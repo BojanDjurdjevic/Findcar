@@ -1,6 +1,7 @@
 import { authStore } from '../../store/auth.store';
 import { authService } from '../../services/auth.service';
 import { router } from '../../main';
+import { Toast } from '../../utils/toast';
 
 export function MainLayout(content: HTMLElement): HTMLElement {
   const wrapper = document.createElement('div');
@@ -72,6 +73,7 @@ export function MainLayout(content: HTMLElement): HTMLElement {
     .addEventListener('click', async () => {
       await authService.logout();
       authStore.setUser(null);
+      Toast.success('Logged out');
       router.navigate('/login');
     });
 
