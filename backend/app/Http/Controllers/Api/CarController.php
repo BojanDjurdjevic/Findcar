@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateCarRequest;
 use App\Http\Resources\CarListResource;
 use App\Http\Resources\CarResource;
 use App\Models\Car;
+use App\Models\User;
 use App\Policies\CarPolicy;
 use App\Services\CarSearchService;
 use App\Services\CarService;
@@ -40,7 +41,7 @@ class CarController extends Controller
 
     public function store(StoreCarRequest $request)
     {
-        Gate::authorize('create', Car::class);
+        //Gate::authorize('create', Car::class);
         
         $car = $this->carService->createListing($request->validated(), $request->file('images'));
 
@@ -52,7 +53,7 @@ class CarController extends Controller
             'transmission',
             'features',
             'images',
-            'user' => $car->user()
+            'user'
         ]));
     }
 
