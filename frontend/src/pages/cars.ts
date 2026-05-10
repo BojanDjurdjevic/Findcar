@@ -2,6 +2,7 @@ import { carService } from '../services/car.service';
 import { CarCard } from '../ui/components/CarCard';
 import { router } from '../main';
 import { authStore } from '../store/auth.store';
+import { Pagination } from '../ui/components/Pagination';
 
 export function CarsPage(): HTMLElement {
   const wrapper = document.createElement('div');
@@ -48,6 +49,10 @@ export function CarsPage(): HTMLElement {
     </button>
   `;
 
+  // Page State:
+  let currentPage = 1;
+  let currentQuery = '';
+
   function buildQuery() {
     const params = new URLSearchParams();
 
@@ -78,22 +83,60 @@ export function CarsPage(): HTMLElement {
   const applyBtn = filtersWrapper.querySelector('#apply')!;
 
   applyBtn.addEventListener('click', async () => {
-    const query = buildQuery();
 
-    const res = await carService.getByFilter(query);
+    currentQuery = buildQuery();
 
-    render(res.data);
+    currentPage = 1;
+
+    renderCars(1);
   });
 
   const list = wrapper.querySelector('#cars-list')!;
   const addCarBtn = wrapper.querySelector('#create-btn') as HTMLButtonElement;
 
-  // fetch data
-  carService.getAll()
-    .then(render)
-    .catch(() => {
-    list.innerHTML = `<div class="text-red-500">Failed to load</div>`;
+  async function renderCars(page = 1) {
+
+    list.innerHTML = `
+      <div class="col-span-full text-center py-10">
+        Loading...
+      </div>
+    `;
+
+    const res = await carService.getAll(
+      page,
+      currentQuery
+    );
+
+    list.innerHTML = '';
+
+    res.data.forEach((car: any) => {
+      list.appendChild(CarCard(car));
     });
+
+    const oldPagination =
+      wrapper.querySelector('#pagination');
+
+    oldPagination?.remove();
+
+    const paginationWrapper =
+      document.createElement('div');
+
+    paginationWrapper.id = 'pagination';
+
+    paginationWrapper.appendChild(
+      Pagination({
+        currentPage: res.meta.current_page,
+        lastPage: res.meta.last_page,
+
+        onPageChange: (newPage) => {
+          currentPage = newPage;
+          renderCars(newPage);
+        }
+      })
+    );
+
+    wrapper.appendChild(paginationWrapper);
+  }
 
   // create button
   if(!authStore.isAuthenticated) {
@@ -104,8 +147,10 @@ export function CarsPage(): HTMLElement {
       router.navigate('/cars/create');
     });
   }
-  
+
   wrapper.insertBefore(filtersWrapper, list);
+
+  renderCars();
 
   return wrapper;
 }

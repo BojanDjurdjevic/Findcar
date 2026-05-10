@@ -1,107 +1,118 @@
 import { carService } from '../services/car.service';
 import { CarCard } from '../ui/components/CarCard';
+import { Pagination } from '../ui/components/Pagination';
 
 export function MyCarsPage(): HTMLElement {
+
   const wrapper = document.createElement('div');
 
   wrapper.innerHTML = `
-    <h1 class="text-2xl font-semibold mb-4">My Cars</h1>
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-2xl font-semibold">
+        My Cars
+      </h1>
+    </div>
 
     <input 
       id="search"
       placeholder="Search my cars..."
-      class="border p-2 mb-4 w-full"
+      class="border p-2 mb-4 w-full rounded"
     />
 
-    <div id="cars" class="grid gap-4"></div>
+    <div 
+      id="cars"
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+    >
+      <div class="col-span-full text-center py-10">
+        Loading...
+      </div>
+    </div>
   `;
 
-  const carsContainer = wrapper.querySelector('#cars') as HTMLElement;
-  const searchInput = wrapper.querySelector('#search') as HTMLInputElement;
+  const carsContainer =
+    wrapper.querySelector('#cars') as HTMLElement;
 
-  let cars: any[] = [];
+  const searchInput =
+    wrapper.querySelector('#search') as HTMLInputElement;
 
-  function render(list: any[]) {
+  // PAGE STATE:
+  let currentPage = 1;
+  let currentSearch = '';
+
+  // RENDER
+  function render(cars: any[]) {
+
     carsContainer.innerHTML = '';
 
-    list.forEach(car => {
+    if (cars.length === 0) {
+      carsContainer.innerHTML = `
+        <div class="col-span-full text-center text-gray-500 py-10">
+          No cars found
+        </div>
+      `;
+
+      return;
+    }
+
+    cars.forEach(car => {
       carsContainer.appendChild(CarCard(car));
     });
   }
 
-  // LOAD mycars
-  carService.myCars().then(data => {
-    cars = data;      
-    render(cars);       
-  });
+  // LOAD
+  async function loadCars(page = 1) {
 
-  //SEARCH
-  searchInput.addEventListener('input', () => {
-    const q = searchInput.value.toLowerCase();
+    carsContainer.innerHTML = `
+      <div class="col-span-full text-center py-10">
+        Loading...
+      </div>
+    `;
 
-    const filtered = cars.filter(car =>
-      car.title.toLowerCase().includes(q) ||
-      car.make.name.toLowerCase().includes(q) ||
-      car.model.name.toLowerCase().includes(q)
+    const res = await carService.myCars(
+      page,
+      currentSearch
     );
 
-    render(filtered);
+    render(res.data);
+
+    // REMOVE OLD PAGINATION
+    wrapper.querySelector('#pagination')?.remove();
+
+    // CREATE NEW PAGINATION
+    const paginationWrapper =
+      document.createElement('div');
+
+    paginationWrapper.id = 'pagination';
+
+    paginationWrapper.className = 'mt-6';
+
+    paginationWrapper.appendChild(
+      Pagination({
+        currentPage: res.meta.current_page,
+        lastPage: res.meta.last_page,
+
+        onPageChange: (newPage) => {
+          currentPage = newPage;
+          loadCars(newPage);
+        }
+      })
+    );
+
+    wrapper.appendChild(paginationWrapper);
+  }
+
+  // SEARCH
+  searchInput.addEventListener('input', () => {
+
+    currentSearch = searchInput.value.trim();
+
+    currentPage = 1;
+
+    loadCars(1);
   });
+
+  // INITIAL LOAD
+  loadCars();
 
   return wrapper;
 }
-
-
-/*
-mport { carService } from '../services/car.service';
-//import { authStore } from '../services/auth.service';
-import { CarCard } from '../ui/components/CarCard';
-
-export function MyCarsPage(): HTMLElement {
-  const wrapper = document.createElement('div');
-
-  wrapper.innerHTML = `
-    <h1 class="text-2xl font-semibold mb-4">My Cars</h1>
-
-    <input 
-      id="search"
-      placeholder="Search my cars..."
-      class="border p-2 mb-4 w-full"
-    />
-
-    <div id="cars" class="grid gap-4"></div>
-  `;
-
-  const carsContainer = wrapper.querySelector('#cars') as HTMLElement;
-  const searchInput = wrapper.querySelector('#search') as HTMLInputElement;
-
-  //let cars = await carService.myCars();
-
-  function render(list: any[]) {
-    carsContainer.innerHTML = '';
-
-    list.forEach(car => {
-      carsContainer.appendChild(CarCard(car));
-    });
-  }
-
-  let cars = carService.myCars().then(cars => {
-        render(cars);
-    });
-
-  //render(cars);
-
-  searchInput.addEventListener('input', () => {
-    const q = searchInput.value.toLowerCase();
-
-    const filtered = cars.filter((car: any) =>
-      car.title.toLowerCase().includes(q) ||
-      car.make.name.toLowerCase().includes(q) ||
-      car.model.name.toLowerCase().includes(q)
-    );
-
-    render(filtered);
-  });
-
-  return wrapper;
-} */
