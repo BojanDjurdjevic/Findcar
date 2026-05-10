@@ -5,7 +5,11 @@ import { MainLayout } from '../ui/layouts/MainLayout';
 
 type Route = {
   path: string;
-  component: (params?: Record<string, string>) => HTMLElement;
+  
+  component: (
+    params?: Record<string, string>
+  ) => HTMLElement | Promise<HTMLElement>;
+
   meta?: {
     auth?: boolean;
   }
@@ -59,7 +63,7 @@ export class Router {
     return null
   }
 
-  render() {
+  async render() {
     const path = window.location.pathname;
 
     const result = this.match(path);
@@ -75,7 +79,7 @@ export class Router {
         return;
       }
 
-      const page = route.component(params);
+      const page = await route.component(params)
 
       if (path === '/login') {
         this.root.appendChild(page);

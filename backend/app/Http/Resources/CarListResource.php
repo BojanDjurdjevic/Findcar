@@ -15,6 +15,8 @@ class CarListResource extends JsonResource
             'title' => $this->title,
             'price' => $this->price,
             'year' => $this->year,
+            'mileage' => $this->mileage,
+            'location' => $this->location,
 
             'make' => $this->make?->name,
             'model' => $this->model?->name,
@@ -23,7 +25,15 @@ class CarListResource extends JsonResource
                 ? Storage::url($this->images->first()->image_path)
                 : null,
             
-            'user_id' => $this->user_id
+            'user_id' => $this->user_id,
+
+            'user' => [
+                'id' => $this->user?->id,
+                'name' => $this->user?->name,
+                'city' => $this->user?->city,
+                'email' => $this->user?->email,
+                'phone' => $this->user?->phone,
+            ],
         ];
     }
 }

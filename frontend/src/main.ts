@@ -7,6 +7,7 @@ import { DashboardPage } from './pages/dashboard';
 import { CarsPage } from './pages/cars';
 import { CarFormPage } from './pages/car-form';
 import { MyCarsPage } from './pages/mycars';
+import { CarShowPage } from './pages/car-show';
 
 const root = document.querySelector('#app') as HTMLElement;
 
@@ -42,6 +43,11 @@ router.register({
   path: '/cars/:id/edit',
   component: CarFormPage,
 });
+
+router.register({
+  path: '/cars/:id',
+  component: CarShowPage
+}); 
 
 
 initApp();

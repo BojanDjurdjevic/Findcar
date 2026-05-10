@@ -1,3 +1,86 @@
+import { router } from '../../main';
+
+export function CarCard(car: any): HTMLElement {
+
+  const card = document.createElement('div');
+
+  card.className = `
+    bg-white rounded-xl overflow-hidden shadow
+    hover:shadow-lg transition cursor-pointer
+    border border-gray-100
+  `;
+
+  const image =
+    car.images?.[0]?.path ||
+    'https://placehold.co/600x400?text=No+Image';
+
+  card.innerHTML = `
+    
+    <!-- IMAGE -->
+    <div class="h-52 bg-gray-100 overflow-hidden">
+      <img
+        src="${image}"
+        alt="${car.title}"
+        class="w-full h-full object-cover hover:scale-105 transition duration-300"
+      />
+    </div>
+
+    <!-- CONTENT -->
+    <div class="p-4">
+
+      <!-- TITLE -->
+      <div class="flex items-start justify-between gap-2">
+        <h2 class="font-semibold text-lg leading-tight">
+          ${car.title}
+        </h2>
+
+        <div class="text-blue-600 font-bold whitespace-nowrap">
+          €${Number(car.price).toLocaleString()}
+        </div>
+      </div>
+
+      <!-- META -->
+      <div class="flex flex-wrap gap-2 mt-3 text-sm">
+
+        <span class="bg-gray-100 px-2 py-1 rounded">
+          ${car.year}
+        </span>
+
+        <span class="bg-gray-100 px-2 py-1 rounded">
+          ${Number(car.mileage).toLocaleString()} km
+        </span>
+
+        <span class="bg-gray-100 px-2 py-1 rounded">
+          ${car.fuel_type?.name ?? 'Fuel'}
+        </span>
+
+      </div>
+
+      <!-- LOCATION -->
+      <div class="mt-4 text-sm text-gray-500">
+        📍 ${car.location}
+      </div>
+
+      <!-- SELLER -->
+      <div class="mt-3 pt-3 border-t text-sm text-gray-600">
+        Seller:
+        <span class="font-medium">
+          ${car.user?.name ?? 'Unknown'}
+        </span>
+      </div>
+    </div>
+  `;
+
+  // CLICKABLE CARD
+  card.addEventListener('click', () => {
+    router.navigate(`/cars/${car.id}`);
+  });
+
+  return card;
+}
+
+
+/*
 import { router } from "../../main";
 import { carService } from "../../services/car.service";
 import { authStore } from "../../store/auth.store";
@@ -83,3 +166,4 @@ export function CarCard(car: Car): HTMLElement {
 
   return div;
 }
+  */

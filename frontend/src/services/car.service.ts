@@ -51,4 +51,13 @@ export const carService = {
     const res = await api.get(`/api/cars?${query}`);
     return res.data;
   },
+
+  async getByUser(userId: number) {
+
+    const res = await api.get(
+      `/api/users/${userId}/cars`
+    );
+
+    return res.data.data ?? res.data;
+  },
 };

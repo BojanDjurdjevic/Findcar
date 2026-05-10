@@ -14,6 +14,9 @@ export type Car = {
   color?: string;
   description?: string;
   features: [];
+  images: {
+    
+  };
 
   make: Option;
   model: Option;
@@ -21,6 +24,13 @@ export type Car = {
   body_type: Option;
   transmission: Option;
   user_id: number;
+
+  user: {
+    id: number;
+    name: string;
+    email?: string;
+    phone?: string;
+  };
 };
 
 export type CarPayload = {

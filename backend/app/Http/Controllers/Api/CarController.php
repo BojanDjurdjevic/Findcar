@@ -32,10 +32,41 @@ class CarController extends Controller
 
     public function myCars()
     {
+        /*
         return CarResource::collection(
             Car::where('user_id', auth()->id())
                 ->latest()
                 ->get()
+        ); */
+
+        return CarResource::collection(
+            auth()->user()
+                ->cars()
+                ->with([
+                    'make',
+                    'model',
+                    'fuelType',
+                    'bodyType',
+                    'transmission',
+                    'images',
+                    'user'
+                ])
+                ->latest()
+                ->paginate(15)
+        );
+    }
+
+    public function userCars(User $user)
+    {
+        return CarListResource::collection(
+            $user->cars()
+                ->with([
+                    'make',
+                    'model',
+                    'images'
+                ])
+                ->latest()
+                ->paginate(15)
         );
     }
 

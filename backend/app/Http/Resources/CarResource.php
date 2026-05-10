@@ -63,12 +63,20 @@ class CarResource extends JsonResource
                 'id' => $img->id,
                 'url' => Storage::url($img->image_path),
             ]),
-
+            /*
             'owner' => [
                 'name' => $this->user?->name,
                 'city' => $this->user?->city,
                 'email' => $this->user?->email,
                 'phone' => $this->user?->phone
+            ], */
+
+            'user' => [
+                'id' => $this->user?->id,
+                'name' => $this->user?->name,
+                'city' => $this->user?->city,
+                'email' => $this->user?->email,
+                'phone' => $this->user?->phone,
             ],
         ];
     }
