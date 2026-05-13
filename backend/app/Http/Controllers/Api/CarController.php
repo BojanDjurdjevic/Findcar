@@ -110,7 +110,7 @@ class CarController extends Controller
 
         Gate::authorize('update', $car);
 
-        $updatedCar = $this->carService->updateListing($car, $request->validated());
+        $updatedCar = $this->carService->updateListing($car, $request->validated(), $request->file('images'));
 
         return new CarResource($updatedCar);
     }

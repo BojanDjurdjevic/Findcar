@@ -119,6 +119,16 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
     description.placeholder = 'Description';
     description.className = 'border p-2 w-full mb-3';
 
+    // IMAGE UPLOAD
+
+    const imageInput = document.createElement('input');
+
+    imageInput.type = 'file';
+    imageInput.multiple = true;
+    imageInput.accept = 'image/*';
+
+    imageInput.className = 'border p-2 w-full mb-3 bg-white';
+
     const btn = document.createElement('button');
     btn.textContent = isEdit ? 'Update' : 'Create';
     btn.className = 'bg-blue-500 text-white w-full py-2 rounded';
@@ -210,51 +220,89 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
 
     // SUBMIT
     btn.addEventListener('click', async () => {
-      const data: CarPayload = {
-        make_id: Number(make.value),
-        model_id: Number(model.value),
-        fuel_type_id: Number(fuel.value),
-        body_type_id: Number(body.value),
-        transmission_id: Number(transmission.value),
 
-        title: title.value,
-        year: Number(year.value),
-        price: Number(price.value),
-        mileage: Number(mileage.value),
-        location: location.value,
+      const formData = new FormData();
 
-        // part II:
+      // basic info
 
-        engine_size: engineSize.value ? Number(engineSize.value) : null,
-        horsepower: horsepower.value ? Number(horsepower.value) : null,
-        color: color.value || null,
-        description: description.value || null,
+      formData.append('make_id', make.value);
+      formData.append('model_id', model.value);
 
-        //part III
+      formData.append('fuel_type_id', fuel.value);
+      formData.append('body_type_id', body.value);
+      formData.append('transmission_id', transmission.value);
 
-        features: selectedFeatures ?? [],
-      };
+      formData.append('title', title.value);
+      formData.append('year', year.value);
+
+      formData.append('price', price.value);
+      formData.append('mileage', mileage.value);
+
+      formData.append('location', location.value);
+
+      // OPTIONAL
+
+      if (engineSize.value) {
+        formData.append('engine_size', engineSize.value);
+      }
+
+      if (horsepower.value) {
+        formData.append('horsepower', horsepower.value);
+      }
+
+      if (color.value) {
+        formData.append('color', color.value);
+      }
+
+      if (description.value) {
+        formData.append('description', description.value);
+      }
+
+      // FEATURES
+
+      selectedFeatures.forEach(featureId => {
+        formData.append('features[]', String(featureId));
+      });
+
+      // IMAGES
+
+      if (imageInput.files) {
+
+        Array.from(imageInput.files).forEach(file => {
+          formData.append('images[]', file);
+        });
+      }
 
       showLoading();
 
       try {
+
         if (isEdit) {
-          await carService.update(Number(params!.id), data);
+
+          await carService.update(
+            Number(params!.id),
+            formData
+          );
+
           Toast.success('Car updated successfully');
+
         } else {
-          await carService.create(data);
+
+          await carService.create(formData);
+
           Toast.success('Car created successfully');
         }
 
         router.navigate('/cars');
 
       } catch (e: any) {
+
         console.error(e);
 
         const status = e?.response?.status;
 
         if (status === 403) {
-          Toast.error('You are not allowed to edit this car');
+          Toast.error('You are not allowed');
           return;
         }
 
@@ -264,10 +312,12 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
         }
 
         Toast.error('Something went wrong');
+
       } finally {
-        hideLoading()
+
+        hideLoading();
       }
-    });
+  });
 
     form.append(
       createField('Make', make),
@@ -285,6 +335,8 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
       createField('Horsepower', horsepower),
       createField('Color', color),
       createField('Car description', description),
+      //Images:
+      createField('Car Images', imageInput),
       featuresWrapper,
       btn
     );

@@ -28,6 +28,10 @@ class UpdateCarRequest extends CarBaseRequest
                 'features' => 'nullable|array',
 
                 'features.*' => 'exists:features,id',
+
+                'images' => 'nullable|array|max:10',
+
+                'images.*' => 'image|mimes:jpg,jpeg,png,webp|max:5120'
             ]
         );
     }

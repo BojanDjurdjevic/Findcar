@@ -65,10 +65,10 @@ class CarService
         );
     }
 
-    public function updateListing(Car $car, array $data)
+    public function updateListing(Car $car, array $data, ?array $images = null)
     {
         return DB::transaction(
-            function() use($car, $data) {
+            function() use($car, $data, $images) {
                 $featureIds = $data['features'] ?? [];
 
                 if(array_key_exists('features', $data)) {
@@ -83,6 +83,10 @@ class CarService
                 if(isset($data['title'])) $data['slug'] = Str::slug($data['title'] . '-' . uniqid());
                 
                 $car->update($data);
+
+                if ($images) {
+                    $this->storeImages($car, $images);
+                }
 
                 return $car->load([
                     'make',

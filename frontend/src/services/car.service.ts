@@ -16,12 +16,12 @@ export const carService = {
     return res.data.data;
   },
 
-  async create(data: CarPayload) {
+  async create(data: FormData) {
     const res = await api.post('/api/cars', data);
     return res.data.data;
   },
 
-  async update(id: number, data: CarPayload) {
+  async update(id: number, data: FormData) {
     const res = await api.put(`/api/cars/${id}`, data);
     return res.data.data;
   },
