@@ -277,6 +277,20 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
 
           wrapper.appendChild(image);
 
+          //is-primary badge:
+
+          if (img.is_primary) {
+
+            const badge = document.createElement('div');
+
+            badge.textContent = 'PRIMARY';
+
+            badge.className =
+              'absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded';
+
+            wrapper.appendChild(badge);
+          }
+
           //Delete ONE Image:
 
           const deleteBtn = document.createElement('button');
@@ -309,6 +323,42 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
           });
 
           wrapper.appendChild(deleteBtn);
+
+          if (!img.is_primary) {
+
+            const primaryBtn = document.createElement('button');
+
+            primaryBtn.textContent = 'Set Primary';
+
+            primaryBtn.className = 'absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded hover:bg-black';
+
+            primaryBtn.addEventListener(
+              'click',
+              async () => {
+
+                try {
+
+                  await carService.setPrimaryImage(car.id, img.id);
+
+                  Toast.success(
+                    'Primary image updated'
+                  );
+
+                  router.navigate(
+                    `/cars/${car.id}/edit`
+                  );
+
+                } catch {
+
+                  Toast.error(
+                    'Failed to update image'
+                  );
+                }
+              }
+            );
+
+            wrapper.appendChild(primaryBtn);
+          }
 
           existingImages.appendChild(wrapper);
         });

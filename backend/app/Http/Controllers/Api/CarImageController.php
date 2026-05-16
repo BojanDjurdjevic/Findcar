@@ -8,6 +8,7 @@ use App\Models\CarImage;
 use App\Services\CarImageService;
 
 use App\Http\Requests\StoreCarImageRequest;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class CarImageController 
@@ -25,6 +26,30 @@ class CarImageController
         return response()->json([
             'message' =>
             'Images are successfully uploaded.'
+        ]);
+    }
+
+    public function setPrimary(Car $car, CarImage $image)
+    {
+        if ($image->car_id !== $car->id) {
+            abort(404);
+        }
+
+        Gate::authorize('update', $car);
+
+        DB::transaction(function () use ($car, $image) {
+
+            $car->images()->update([
+                'is_primary' => false
+            ]);
+
+            $image->update([
+                'is_primary' => true
+            ]);
+        });
+
+        return response()->json([
+            'message' => 'Primary image updated'
         ]);
     }
 

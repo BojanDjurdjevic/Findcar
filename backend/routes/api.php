@@ -28,6 +28,8 @@ Route::middleware(['auth:sanctum'])->group(function() {
 
     Route::post('/cars/{car}/images', [CarImageController::class,'store']);
 
+    Route::put('/cars/{car}/images/{image}/primary', [CarImageController::class, 'setPrimary']);
+
     Route::delete('/cars/{car}/images/{image}', [CarImageController::class,'destroy']);
 });
 

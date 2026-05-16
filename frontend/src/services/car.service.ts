@@ -36,6 +36,12 @@ export const carService = {
     );
   },
 
+  async setPrimaryImage(carId: number, imageId: number) {
+    await api.put(
+      `/api/cars/${carId}/images/${imageId}/primary`
+    );
+  },
+
   async myCars(page = 1, search = '') {
 
     const params = new URLSearchParams();

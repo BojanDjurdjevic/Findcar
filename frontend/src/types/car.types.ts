@@ -60,6 +60,7 @@ export type Feature = {
 export type CarImage = {
   id: number;
   url: string;
+  is_primary: boolean;
 };
 
 export type PaginatedCars = {
