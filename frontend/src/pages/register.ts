@@ -48,7 +48,7 @@ export function RegisterPage(): HTMLElement {
 
     try {
 
-      const user = await authService.register({
+      await authService.register({
         name: name.value,
         email: email.value,
         password: password.value,
@@ -56,6 +56,8 @@ export function RegisterPage(): HTMLElement {
         phone: phone.value,
         city: city.value
       });
+
+      const user = await authService.me()
 
       authStore.setUser(user);
 
