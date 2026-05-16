@@ -22,7 +22,16 @@ export function LoginPage(): HTMLElement {
           class="bg-blue-500 text-white px-4 py-2 w-full">
           Login
         </button>
+
+        <p class="text-sm mt-3 text-center">
+          Don't have account?
+          <a href="/register" id="registerLink" class="text-blue-500">
+            Register
+          </a>
+        </p>
       </div>
+
+      
     </div>
   `;
 
@@ -44,6 +53,7 @@ export function LoginPage(): HTMLElement {
       router.navigate('/dashboard');
     } catch (e) {
       Toast.error('Invalid credentials');
+      console.log(e)
     } finally {
       hideLoading()
     }

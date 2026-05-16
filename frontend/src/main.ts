@@ -8,12 +8,16 @@ import { CarsPage } from './pages/cars';
 import { CarFormPage } from './pages/car-form';
 import { MyCarsPage } from './pages/mycars';
 import { CarShowPage } from './pages/car-show';
+import { RegisterPage } from './pages/register';
 
 const root = document.querySelector('#app') as HTMLElement;
 
 export const router = new Router(root);
 
-
+router.register({
+  path: '/register',
+  component: RegisterPage
+});
 router.register({ 
     path: '/login', 
     component: LoginPage 
