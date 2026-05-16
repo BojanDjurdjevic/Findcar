@@ -5,6 +5,7 @@ import type { CarPayload, Feature } from '../types/car.types';
 import { api } from '../api/axios';
 import { Toast } from '../utils/toast';
 import { hideLoading, showLoading } from '../ui/layouts/Overlay';
+import { confirmModal } from '../ui/components/ConfirmModal';
 
 export function CarFormPage(params?: Record<string, string>): HTMLElement {
   const wrapper = document.createElement('div');
@@ -275,6 +276,39 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
             'w-full h-32 object-cover';
 
           wrapper.appendChild(image);
+
+          //Delete ONE Image:
+
+          const deleteBtn = document.createElement('button');
+
+          deleteBtn.textContent = '×';
+
+          deleteBtn.className =
+            'absolute top-2 right-2 bg-red-600 text-white w-7 h-7 rounded-full hover:bg-red-500';
+
+          deleteBtn.addEventListener('click', async () => {
+
+            const confirmed = await confirmModal(
+              'Delete this image?'
+            );
+
+            if (!confirmed) return;
+
+            try {
+
+              await carService.deleteImage(img.id);
+
+              wrapper.remove();
+
+              Toast.success('Image deleted');
+
+            } catch {
+
+              Toast.error('Delete failed');
+            }
+          });
+
+          wrapper.appendChild(deleteBtn);
 
           existingImages.appendChild(wrapper);
         });

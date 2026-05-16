@@ -30,6 +30,12 @@ export const carService = {
     await api.delete(`/api/cars/${id}`);
   },
 
+  async deleteImage(imageId: number) {
+    await api.delete(
+      `/api/car-images/${imageId}`
+    );
+  },
+
   async myCars(page = 1, search = '') {
 
     const params = new URLSearchParams();
