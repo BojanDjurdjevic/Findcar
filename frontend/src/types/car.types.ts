@@ -14,9 +14,7 @@ export type Car = {
   color?: string;
   description?: string;
   features: [];
-  images: {
-    
-  };
+  images: CarImage[];
 
   make: Option;
   model: Option;
@@ -57,6 +55,11 @@ export type CarPayload = {
 export type Feature = {
   id: number;
   name: string;
+};
+
+export type CarImage = {
+  id: number;
+  url: string;
 };
 
 export type PaginatedCars = {

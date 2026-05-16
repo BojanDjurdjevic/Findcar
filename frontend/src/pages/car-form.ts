@@ -123,11 +123,50 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
 
     const imageInput = document.createElement('input');
 
+    const imagePreview = document.createElement('div');
+
+    const existingImages = document.createElement('div');
+    
     imageInput.type = 'file';
     imageInput.multiple = true;
     imageInput.accept = 'image/*';
 
     imageInput.className = 'border p-2 w-full mb-3 bg-white';
+    imagePreview.className = 'grid grid-cols-2 md:grid-cols-3 gap-3 mt-3';
+    existingImages.className = 'grid grid-cols-2 md:grid-cols-3 gap-3 mb-4';
+
+    imageInput.addEventListener('change', () => {
+
+      imagePreview.innerHTML = '';
+
+      if (!imageInput.files) return;
+
+      Array.from(imageInput.files).forEach(file => {
+
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+
+          const wrapper = document.createElement('div');
+
+          wrapper.className =
+            'relative rounded overflow-hidden border bg-gray-100';
+
+          const img = document.createElement('img');
+
+          img.src = e.target?.result as string;
+
+          img.className =
+            'w-full h-32 object-cover';
+
+          wrapper.appendChild(img);
+
+          imagePreview.appendChild(wrapper);
+        };
+
+        reader.readAsDataURL(file);
+      });
+    });
 
     const btn = document.createElement('button');
     btn.textContent = isEdit ? 'Update' : 'Create';
@@ -216,6 +255,30 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
           el.checked = true;
         }
       });
+
+      // EXISTING IMAGES
+
+      if (car.images?.length) {
+
+        car.images.forEach((img: any) => {
+
+          const wrapper = document.createElement('div');
+
+          wrapper.className =
+            'relative rounded overflow-hidden border bg-gray-100';
+
+          const image = document.createElement('img');
+
+          image.src = img.url;
+
+          image.className =
+            'w-full h-32 object-cover';
+
+          wrapper.appendChild(image);
+
+          existingImages.appendChild(wrapper);
+        });
+      }
     }
 
     // SUBMIT
@@ -336,7 +399,40 @@ export function CarFormPage(params?: Record<string, string>): HTMLElement {
       createField('Color', color),
       createField('Car description', description),
       //Images:
-      createField('Car Images', imageInput),
+      //createField('Car Images', imageInput),
+      (() => {
+        const field = createField(
+          'Car Images',
+          imageInput
+        );
+
+        if (isEdit) {
+
+          const title = document.createElement('p');
+
+          title.textContent = 'Existing Images';
+
+          title.className =
+            'text-sm font-medium text-gray-700 mb-2 mt-2';
+
+          field.appendChild(title);
+
+          field.appendChild(existingImages);
+        }
+
+        const newTitle = document.createElement('p');
+
+        newTitle.textContent = 'New Uploads';
+
+        newTitle.className =
+          'text-sm font-medium text-gray-700 mb-2 mt-4';
+
+        field.appendChild(newTitle);
+
+        field.appendChild(imagePreview);
+
+        return field;
+      })(),
       featuresWrapper,
       btn
     );
